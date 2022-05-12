@@ -1,0 +1,21 @@
+---
+- name: Add Users
+  hosts: all
+  become: yes
+
+
+  tasks:
+
+  - shell: groupadd {{ group }}
+
+  - shell: useradd {{ owner }} -g {{ group }} -b /home -s /bin/bash
+
+  - shell: sudo  sh -c "echo '{{ owner }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod' > /etc/sudoers.d/socuser"
+ 
+  - shell: mkdir -p /home/socuser/.ssh
+
+  - shell: sudo sh -c  "cat  '/home/user/.ssh/authorized_keys'  >  /home/socuser/.ssh/authorized_keys"
+
+
+
+
