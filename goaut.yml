@@ -1,0 +1,8 @@
+---
+- hosts: 
+    - Ubuntu
+  vars_files:
+    - ./group_vars/srv_ansible.yaml
+  roles:
+    - gouth
+...
