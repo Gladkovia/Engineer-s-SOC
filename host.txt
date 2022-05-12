@@ -1,5 +1,5 @@
 [srv_ansible]
-Ubuntu ansible_host=192.168.157.70 owner=socuser group=soc
+Ubuntu ansible_host=192.168.157.70 owner=socadmin group=socadmin
 
 
 

@@ -12,9 +12,9 @@
 
   - shell: sudo  sh -c "echo '{{ owner }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod' > /etc/sudoers.d/socuser"
  
-  - shell: mkdir -p /home/socuser/.ssh
+  - shell: mkdir -p /home/{{ owner }}/.ssh
 
-  - shell: sudo sh -c  "cat  '/home/user/.ssh/authorized_keys'  >  /home/socuser/.ssh/authorized_keys"
+  - shell: sudo sh -c  "cat  '/home/user/.ssh/authorized_keys'  >  /home/{{ owner }}/.ssh/authorized_keys"
 
 
 
