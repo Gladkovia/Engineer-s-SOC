@@ -11,8 +11,13 @@
     user:
       name: "{{ main_user_name }}"
       state: present
+      shell: /bin/bash
+      home: /home/{{ main_user_name }}
+      group: "{{ mygroup }}"
       groups:
       - "{{ mygroup }}"  
+      - sudo
+      - root
 
   - name: Creation file sudo.d
     become: yes
@@ -27,13 +32,13 @@
       state: present
       insertafter: EOF
       block: |
-        {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
+        {{ main_user_name }} ALL=(ALL:ALL) ALL
 
   - name: Creation Dir SSH
     become: yes 
     file:
        path: /home/{{ main_user_name }}/.ssh
-       mode: 0700
+       mode: 0755
        state: directory
     
   - name: Copy file authorized_keys
@@ -41,7 +46,7 @@
     copy:
        src: /home/user/.ssh/authorized_keys
        dest: /home/{{ main_user_name }}/.ssh/authorized_keys
-       mode: 0400
+       mode: 0644
        remote_src: yes
 
   - name: Install Google Authenticator PAM Module
@@ -88,38 +93,37 @@
       backrefs: yes
     notify: reload ssh
   
-#  - name: Configure MFA On SSH Service
-#    blockinfile:
-#      path: /etc/ssh/sshd_config
-#      marker: "# {mark} MFA Configuration"
-#      state: present
-#      insertafter: EOF
-#      block: |
-#        AuthenticationMethods publickey,keyboard-interactive
-#    notify: reload ssh
+  - name: Configure MFA On SSH Service
+    blockinfile:
+      path: /etc/ssh/sshd_config
+      marker: "# {mark} MFA Configuration"
+      state: present
+      insertafter: EOF
+      block: |
+        AuthenticationMethods publickey keyboard-interactive
+    notify: reload ssh
   
 #  - name: "Check if .google_authenticator exists"
 #    stat:
 #     path: /home/{{ main_user_name }}/.google_authenticator
 #    register: check_google
 
-#  - name: Generate a timed-based, no reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
-#    command: /usr/bin/google-authenticator -t -f -d --no-confirm --label="{{ main_user_name }}" --qr-mode=ANSI -r 3 -R 30 -w 1 --secret=/home/user/.google_authenticator
-#    become: yes
-#    become_user: "{{ main_user_name }}"
-#    become_method: sudo
-#    notify: reload ssh
-#    when: not check_google.stat.exists  # <--HERE
+  - name: Generate a timed-based, no reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
+    command: /usr/bin/google-authenticator -t -f -d --no-confirm  --qr-mode=ANSI -r 3 -R 30 -w 1 --secret=/home/{{ main_user_name }}/.google_authenticator
+    become: yes
+    become_user: "{{ main_user_name }}"
+    become_method: sudo
+    notify: reload ssh
 
-#  - name: Print to screen google authenticator details
-#    command: /bin/cat /home/{{ main_user_name }}/.google_authenticator
-#    register: details
-#    become: yes
+  - name: Print to screen google authenticator details
+    command: /bin/cat /home/{{ main_user_name }}/.google_authenticator
+    register: details
+    become: yes
 
-#  - debug: msg="!!!COPY YOUR SECRET KEYS!!!  {{ details.stdout_lines | quote }}"
+  - debug: msg="!!!COPY YOUR SECRET KEYS!!!  {{ details.stdout_lines | quote }}"
 
-#  when:
-#    - ansible_facts['architecture'] == 'x86_64'
-#    - ansible_facts['distribution'] == 'Ubuntu'
-#  become: yes
+  when:
+    - ansible_facts['architecture'] == 'x86_64'
+    - ansible_facts['distribution'] == 'Ubuntu'
+  become: yes
 ...
