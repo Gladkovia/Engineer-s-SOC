@@ -15,7 +15,6 @@
       home: /home/{{ main_user_name }}
       group: "{{ mygroup }}"
       groups:
-      - "{{ mygroup }}"  
       - sudo
       - root
 
@@ -103,24 +102,34 @@
         AuthenticationMethods publickey keyboard-interactive
     notify: reload ssh
   
-#  - name: "Check if .google_authenticator exists"
-#    stat:
-#     path: /home/{{ main_user_name }}/.google_authenticator
-#    register: check_google
+  - name: "Check if .google_authenticator exists"
+    stat:
+     path: /home/{{ main_user_name }}/.google_authenticator
+    register: check_google
 
-  - name: Generate a timed-based, no reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
-    command: /usr/bin/google-authenticator -t -f -d --no-confirm  --qr-mode=ANSI -r 3 -R 30 -w 1 --secret=/home/{{ main_user_name }}/.google_authenticator
+  - name: Generate a timed-based,  reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
+    command: /usr/bin/google-authenticator -t -f -d --no-confirm  --qr-mode=UTF8 -r 3 -R 30 -w 1 --secret=/home/{{ main_user_name }}/.google_authenticator
     become: yes
     become_user: "{{ main_user_name }}"
     become_method: sudo
     notify: reload ssh
+    when: not check_google.stat.exists  # <--HERE
 
   - name: Print to screen google authenticator details
-    command: /bin/cat /home/{{ main_user_name }}/.google_authenticator
+    command: /usr/bin/cat /home/{{ main_user_name }}/.google_authenticator
     register: details
     become: yes
 
   - debug: msg="!!!COPY YOUR SECRET KEYS!!!  {{ details.stdout_lines | quote }}"
+
+  - name: Configure MFA On SSH Service
+    blockinfile:
+      path: /home/{{ main_user_name }}/.bashrc
+      marker: "# {mark} Add change qrcode"
+      state: present
+      insertafter: EOF
+      block: |
+        /usr/bin/google-authenticator -t -f -d --no-confirm  --qr-mode=UTF8 -r 3 -R 30 -w 1 --secret=/home/$USER/.google_authenticator && /usr/bin/sed -i '$ d' /home/$USER/.bashrc
 
   when:
     - ansible_facts['architecture'] == 'x86_64'
