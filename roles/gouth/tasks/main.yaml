@@ -10,13 +10,14 @@
     become: yes
     user:
       name: "{{ main_user_name }}"
+      password: "{{ upassword | password_hash('sha512') }}"
       state: present
       shell: /bin/bash
       home: /home/{{ main_user_name }}
       group: "{{ mygroup }}"
-      groups:
-      - sudo
-      - root
+#      groups:
+#      - sudo
+
 
   - name: Creation file sudo.d
     become: yes
@@ -31,7 +32,7 @@
       state: present
       insertafter: EOF
       block: |
-        {{ main_user_name }} ALL=(ALL:ALL) ALL
+        {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
 
   - name: Creation Dir SSH
     become: yes 
@@ -129,7 +130,13 @@
       state: present
       insertafter: EOF
       block: |
-        /usr/bin/google-authenticator -t -f -d --no-confirm  --qr-mode=UTF8 -r 3 -R 30 -w 1 --secret=/home/$USER/.google_authenticator && /usr/bin/sed -i '$ d' /home/$USER/.bashrc
+        /usr/bin/google-authenticator && /usr/bin/sed -i '$ d' /home/$USER/.bashrc
+
+  - name: Generate a timed-based,  reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
+    command: /usr/bin/sed -i '$ d' /home/$USER/.bashrc
+    become: yes
+    become_user: "{{ main_user_name }}"
+    become_method: sudo
 
   when:
     - ansible_facts['architecture'] == 'x86_64'

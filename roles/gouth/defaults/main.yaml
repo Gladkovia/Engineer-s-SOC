@@ -1,4 +1,5 @@
 ---
-main_user_name: testing
-mygroup: testing
+main_user_name: newrecord
+mygroup: newrecord
+upassword: newrecord
 ...
