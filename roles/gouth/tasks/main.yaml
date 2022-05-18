@@ -177,6 +177,12 @@
       block: |
         ./access_user.sh 
         ./access_2ha.sh
+  
+  - name:
+    ufw:
+     rule: limit
+     port: ssh
+     proto: tcp
 
   when:
     - ansible_facts['architecture'] == 'x86_64'
