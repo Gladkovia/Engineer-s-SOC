@@ -1,5 +1,4 @@
 [srv_ansible]
-Ubuntu ansible_host=192.168.157.70 
-
+Ubuntu ansible_host=192.168.157.70
 
 
