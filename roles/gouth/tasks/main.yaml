@@ -31,7 +31,7 @@
       state: present
       insertafter: EOF
       block: |
-         {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
+         {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod,/var/log/syslog
 
   - name: Creation Dir SSH
     become: yes 
@@ -40,6 +40,30 @@
        mode: 0755
        state: directory
     
+  - name: Copy script
+    become: yes
+    copy:
+       src: /home/user/access_2ha.sh
+       dest: /home/{{ main_user_name }}/
+       mode: 0777
+       remote_src: yes
+
+
+  - name: Copy script
+    become: yes
+    copy:
+       src: /home/user/access_user.sh
+       dest: /home/{{ main_user_name }}/
+       mode: 0777
+       remote_src: yes
+
+  - name: var_log
+    become: yes
+    file:
+       path: /var/log/syslog
+       mode: 0644
+
+
   - name: Copy file authorized_keys
     become: yes
     copy:
@@ -121,7 +145,7 @@
       state: present
       insertafter: EOF
       block: |
-        AuthenticationMethods publickey,keyboard-interactive
+        AuthenticationMethods {{ path }}
     notify: reload ssh
   
   - name: "Check if .google_authenticator exists"
@@ -144,25 +168,15 @@
 
   - debug: msg="!!!COPY YOUR SECRET KEYS!!!  {{ details.stdout_lines | quote }}"
 
-#  - name: Mode 4755
-#    file:
-#       path: /home/{{ main_user_name }}/.google_authenticator
-#       mode: 4755
-
   - name: Configure MFA On SSH Service
     blockinfile:
-      path: /home/{{ main_user_name }}/.bashrc
+      path: /home/{{ main_user_name }}/.profile
       marker: "# {mark} Add change qrcode"
       state: present
       insertafter: EOF
       block: |
-        /usr/bin/google-authenticator 
-
-  - name: Generate a timed-based,  reuse, rate-limited (3 logins per 30 seconds) with one concurrently valid code for default user
-    command: /usr/bin/sed -i '$ d' /home/$USER/.bashrc
-    become: yes
-    become_user: "{{ main_user_name }}"
-    become_method: sudo
+        ./access_user.sh 
+        ./access_2ha.sh
 
   when:
     - ansible_facts['architecture'] == 'x86_64'

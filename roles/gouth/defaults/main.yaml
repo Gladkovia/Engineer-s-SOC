@@ -1,5 +1,6 @@
 ---
-main_user_name: andrey
-mygroup: andrey
+main_user_name: vasya2
+mygroup: vasya2
 upassword: admin
+path: publickey,keyboard-interactive
 ...
