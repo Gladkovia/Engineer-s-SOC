@@ -31,8 +31,8 @@
       state: present
       insertafter: EOF
       block: |
-         {{ main_user_name }} ALL=(ALL:ALL) ALL
-#        {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
+         {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
+#        {{ main_user_name }} ALL=(ALL:ALL) ALL
 
   - name: Creation Dir SSH
     become: yes 
