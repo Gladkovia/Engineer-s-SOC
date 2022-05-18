@@ -32,7 +32,6 @@
       insertafter: EOF
       block: |
          {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod
-#        {{ main_user_name }} ALL=(ALL:ALL) ALL
 
   - name: Creation Dir SSH
     become: yes 
@@ -56,6 +55,27 @@
       cache_valid_time: 86400
       state: present
 
+  - name: Creation exception file ssh
+    become: yes
+    file:
+      path: /etc/ssh/two-factor-skip.conf
+      state: touch
+
+  - name: Authorization rights ssh
+    blockinfile:
+      path: /etc/ssh/two-factor-skip.conf
+      marker: "# {mark} SSH USER"
+      state: present
+      insertafter: EOF
+      block: |
+       # В локальной сети ходим только лишь с ключём
+       #+ : ALL : 192.168.156.0/22
+       # Этот юзер не может вводить одноразовые коды
+       + : user : ALL
+       # Всех остальных заставим вводить ещё и одноразовый код
+       - : ALL : ALL
+    notify: reload ssh
+
   - name: Configure PAM Authentication Module
     lineinfile:
       path: /etc/pam.d/sshd
@@ -72,6 +92,7 @@
       state: present
       insertafter: EOF
       block: |
+        auth       sufficient   pam_access.so accessfile=/etc/ssh/two-factor-skip.conf
         auth required pam_google_authenticator.so nullok
     notify: reload ssh
 
