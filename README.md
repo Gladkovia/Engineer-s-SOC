@@ -14,6 +14,9 @@
 5. Запускаем ansible-playbook goaut.yml -b -kK, заданые флаги нужны для администратора "user" вводим пароль.
 6. После выполнения процедуры ansible, первый вход требуется выполнить по ssh пользователь@ххх.ххх.ххх.ххх на сервер(ы) указанный(е) в файле host.txt
 
+- В данной ветки запушу инфраструктуру Terraform для AWS
+- https://github.com/Gladkovia/Terraform-for-2HA
+
                            Тестовое задание 2 на SOC инженера
                            
 https://hub.docker.com/r/besedi/test_docker                           
