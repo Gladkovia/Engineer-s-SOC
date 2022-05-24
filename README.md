@@ -17,6 +17,8 @@
 - В данной ветки запушу инфраструктуру Terraform для AWS
 - https://github.com/Gladkovia/Terraform-for-2HA
 
+-(ssh -i ~/.ssh/ansible.pem ubuntu@)
+
                            Тестовое задание 2 на SOC инженера
                            
 https://hub.docker.com/r/besedi/test_docker                           
