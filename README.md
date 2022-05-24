@@ -3,7 +3,7 @@
 
 Для запуска 2HA на парке серверов Linux Ubuntu 20.4 LTS, требуется выполнить следующее:
 
-1. git clone git@github.com:Gladkovia/Engineer-s-SOC-.git
+1. git clone git@github.com:Gladkovia/Engineer-s-SOC.git
  на сервере управления Ansible.
 2. Подготовить парк серверов для подключения по ssh public key, в данном примере пользователь "user"
  "user" - будет выполнять роль администратора. т.е. будет иметь полномочия подключаться к серверам только по public key
