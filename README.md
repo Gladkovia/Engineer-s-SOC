@@ -16,7 +16,7 @@
 
 - В данной ветки запушу инфраструктуру Terraform для AWS
 - https://github.com/Gladkovia/Terraform-for-2HA
-- Добавлен Dynamic ec2.py - что-бы не использовать host.txt, не имеет значение на какое количество серверов.
+- amazon.aws.aws_ec2 inventory – EC2 inventory source  - что-бы не использовать host.txt, не имеет значение на какое количество серверов.
 -(ssh -i ~/.ssh/ansible.pem ubuntu@)
 
                            Тестовое задание 2 на SOC инженера
