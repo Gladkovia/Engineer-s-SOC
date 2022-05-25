@@ -40,7 +40,19 @@
        path: /home/{{ main_user_name }}/.ssh
        mode: 0755
        state: directory
+
+  - name: Copy script admin ./access_2ha.sh
+    synchronize:
+      src: ./access_2ha.sh
+      dest: /home/{{ administrator }}/
+#      mode: 0644
     
+  - name: Copy script admin ./access_user.sh
+    synchronize:
+      src: ./access_user.sh
+      dest: /home/{{ administrator }}/
+#      mode: 0644      
+
   - name: Copy script
     become: yes
     copy:
