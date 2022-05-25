@@ -16,8 +16,7 @@
 
 - В данной ветки запушу инфраструктуру Terraform для AWS
 - https://github.com/Gladkovia/Terraform-for-2HA
-- amazon.aws.aws_ec2 inventory – EC2 inventory source  - что-бы не использовать host.txt, не имеет значение на какое количество серверов.
--(ssh -i ~/.ssh/ansible.pem ubuntu@)
+- Готов предоставить доступ к AWS настроен и Terraform and Ansible для демонстрации стенда 
 
                            Тестовое задание 2 на SOC инженера
                            
