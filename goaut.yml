@@ -1,6 +1,6 @@
 ---
 - hosts: 
-    - Ubuntu
+    - tag_Name_Ubuntu__2HA
   vars_files:
     - ./group_vars/srv_ansible.yaml
   roles:

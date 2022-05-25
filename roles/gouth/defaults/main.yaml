@@ -1,6 +1,7 @@
 ---
-main_user_name: vasya2
-mygroup: vasya2
+administrator: ubuntu
+main_user_name: socuser
+mygroup: socuser
 upassword: admin
 path: publickey,keyboard-interactive
 ...
