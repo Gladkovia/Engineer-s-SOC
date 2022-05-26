@@ -1,0 +1,41 @@
+#!/bin/bash
+#set -v
+# Присвойте имя файла
+filename="/home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml"
+
+user=$(head -n 3 /home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml | tail -n1 | cut -f 1,2 -d ' ')
+group=$(head -n 4 /home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml | tail -n1 | cut -f 1,2 -d ' ')
+
+
+
+# Добавить пользователя
+read -p "Какого пользователя добавить? : " replace_user
+
+# Добавить группу
+read -p "В какую группу добавить пользователя? : " replace_group
+
+# Добавить группу
+read -p "Включить или Выключить 2HA? yes and no : " replace_turn
+
+on="publickey,keyboard-interactive"
+off="publickey keyboard-interactive"
+
+
+if [[ $user != "" && $replace_user != "" ]];  then
+sed -i "s/$user/main_user_name: $replace_user/" $filename
+fi
+
+if [[ $group != "" && $replace_group != "" ]]; then
+sed -i "s/$group/mygroup: $replace_group/" $filename
+fi
+
+if [ "yes" == "$replace_turn" ]; then
+sed -i "s/$off/$on/" $filename
+elif [ "no" ==  "$replace_turn" ]; then
+sed -i "s/$on/$off/" $filename
+else echo "Действие невено, повторите. "
+fi
+
+
+
+
