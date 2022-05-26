@@ -1,12 +1,12 @@
 ---
 - block:
-  - name: Group add 
+  - name: Add group  
     become: yes
     group:
       name: "{{ mygroup }}"
       state: present
 
-  - name: User add 
+  - name: Add user 
     become: yes
     user:
       name: "{{ main_user_name }}"
@@ -25,7 +25,7 @@
       path: /etc/sudoers.d/{{ main_user_name }}  
       state: touch
       
-  - name: User rights Sudo 
+  - name: User rights sudo 
     blockinfile:
       path: /etc/sudoers.d/{{ main_user_name }}
       marker: "# {mark} Sudo User"
@@ -41,36 +41,35 @@
        mode: 0755
        state: directory
 
-  - name: Copy script admin ./access_2ha.sh
+  - name: Copy script admin access_2ha.sh
     synchronize:
       src: ./access_2ha.sh
       dest: /home/{{ administrator }}/
-#      mode: 0644
+
     
-  - name: Copy script admin ./access_user.sh
+  - name: Copy script admin access_user.sh
     synchronize:
       src: ./access_user.sh
       dest: /home/{{ administrator }}/
-#      mode: 0644      
 
-  - name: Copy script
+  - name: Copy script access_2ha
     become: yes
     copy:
        src: ./access_2ha.sh
        dest: /home/{{ main_user_name }}/
-       mode: 0777
+       mode: 0770
        remote_src: yes
 
 
-  - name: Copy script
+  - name: Copy script access_user
     become: yes
     copy:
        src: ./access_user.sh
        dest: /home/{{ main_user_name }}/
-       mode: 0777
+       mode: 0770
        remote_src: yes
 
-  - name: var_log
+  - name: Rights to syslog
     become: yes
     file:
        path: /var/log/syslog
@@ -172,7 +171,7 @@
     become_user: "{{ main_user_name }}"
     become_method: sudo
     notify: reload ssh
-    when: not check_google.stat.exists  # <--HERE
+    when: not check_google.stat.exists  
 
   - name: Print to screen google authenticator details
     command: /usr/bin/cat /home/{{ main_user_name }}/.google_authenticator
@@ -181,17 +180,17 @@
 
   - debug: msg="!!!COPY YOUR SECRET KEYS!!!  {{ details.stdout_lines | quote }}"
 
-  - name: Configure MFA On SSH Service
+  - name: Add script`s to file profile
     blockinfile:
       path: /home/{{ main_user_name }}/.profile
-      marker: "# {mark} Add change qrcode"
+      marker: "# {mark} Add change profile"
       state: present
       insertafter: EOF
       block: |
         ./access_user.sh 
         ./access_2ha.sh
   
-  - name:
+  - name: Open 22 port firewall
     ufw:
      rule: limit
      port: ssh
