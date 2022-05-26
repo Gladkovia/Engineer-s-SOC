@@ -9,10 +9,10 @@ group=$(head -n 4 /home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml | t
 
 
 # Добавить пользователя
-read -p "Какого пользователя добавить? : " replace_user
+read -p "Какого пользователя добавить?($user): " replace_user
 
 # Добавить группу
-read -p "В какую группу добавить пользователя? : " replace_group
+read -p "В какую группу добавить пользователя?($group): " replace_group
 
 # Добавить группу
 read -p "Включить или Выключить 2HA? yes and no : " replace_turn
