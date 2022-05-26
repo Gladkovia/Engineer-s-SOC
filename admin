@@ -1,28 +1,37 @@
 #!/bin/bash
-#set -v
-# Присвойте имя файла
-filename="/home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml"
 
-user=$(head -n 3 /home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml | tail -n1 | cut -f 1,2 -d ' ')
-group=$(head -n 4 /home/ubuntu/Engineer-s-SOC/roles/gouth/defaults/main.yaml | tail -n1 | cut -f 1,2 -d ' ')
 
+filename="/home/ubuntu/Engineer-s-SOC/group_vars/srv_ansible.yaml"
+
+
+
+user=$(head -n 3 /home/ubuntu/Engineer-s-SOC/group_vars/srv_ansible.yaml | tail -n1 | cut -f 1,2 -d ' ')
+group=$(head -n 4 /home/ubuntu/Engineer-s-SOC/group_vars/srv_ansible.yaml | tail -n1 | cut -f 1,2 -d ' ')
 
 
 # Добавить пользователя
-read -p "Какого пользователя добавить?($user): " replace_user
+read -p "Какого пользователя добавить?($user) : " replace_user
 
 # Добавить группу
-read -p "В какую группу добавить пользователя?($group): " replace_group
+read -p "В какую группу добавить пользователя?($group) : " replace_group
 
-# Добавить группу
-read -p "Включить или Выключить 2HA? yes and no : " replace_turn
+# Отключить 2HA
+read -p "Отключить 2HA (yes)
+Если не требуеться (no) 
+: " replace_turn
+
+# Запустить процесс для нового пользователя, или выключение для пользователя 2HA 
+read -p "Если запустить процесс для нового пользователя набирите (yes)
+Если запустить процесс отключения 2HA для определенного пользователя наберите (no)
+: " replace_process
+
 
 on="publickey,keyboard-interactive"
 off="publickey keyboard-interactive"
 
 
 if [[ $user != "" && $replace_user != "" ]];  then
-sed -i "s/$user/main_user_name: $replace_user/" $filename
+sed -i "s/$user/main_user_name: $replace_user/" $filename 
 fi
 
 if [[ $group != "" && $replace_group != "" ]]; then
@@ -30,12 +39,15 @@ sed -i "s/$group/mygroup: $replace_group/" $filename
 fi
 
 if [ "yes" == "$replace_turn" ]; then
-sed -i "s/$off/$on/" $filename
-elif [ "no" ==  "$replace_turn" ]; then
-sed -i "s/$on/$off/" $filename
-else echo "Действие невено, повторите. "
+sed -i "s/$off/$on/" $fileadmin
 fi
 
+if [ "yes" == "$replace_process" ]; then
+ansible-playbook goaut.yml -b -kk
+elif [ "no" ==  "$replace_process" ]; then
+ansible-playbook admin.yml -b -kk
+else echo "Действие невено, повторите. "
+fi
 
 
 
