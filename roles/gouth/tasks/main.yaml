@@ -45,25 +45,10 @@
       src: ./access_2ha.sh
       dest: /home/{{ administrator }}/
 
-    
-  - name: Copy script admin access_user.sh
-    synchronize:
-      src: ./access_user.sh
-      dest: /home/{{ administrator }}/
-
   - name: Copy script access_2ha
     become: yes
     copy:
        src: ./access_2ha.sh
-       dest: /home/{{ main_user_name }}/
-       mode: 0777
-       remote_src: yes
-
-
-  - name: Copy script access_user
-    become: yes
-    copy:
-       src: ./access_user.sh
        dest: /home/{{ main_user_name }}/
        mode: 0777
        remote_src: yes
@@ -186,7 +171,6 @@
       state: present
       insertafter: EOF
       block: |
-        ./access_user.sh 
         ./access_2ha.sh
   
   - name: Open 22 port firewall
