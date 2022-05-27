@@ -1,7 +1,7 @@
 ---
 administrator: ubuntu # <- Администратор системы
-main_user_name: new # <- Пользователь
-mygroup: new # <- Группа пользователя
+main_user_name: ttt # <- Пользователь
+mygroup: ttt # <- Группа пользователя
 upassword: admin # <- Пароль
 path: publickey,keyboard-interactive # <- Включить/Выключить 2HA убрать или добавить запятую после publickey
 #ansible_user                 : ubuntu
