@@ -17,7 +17,6 @@
       group: "{{ mygroup }}"
       groups:
       - users
-      - sudo
 
   - name: Creation file sudo.d
     become: yes
