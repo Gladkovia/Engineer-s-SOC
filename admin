@@ -16,13 +16,13 @@ read -p "Какого пользователя добавить?($user) : " repl
 read -p "В какую группу добавить пользователя?($group) : " replace_group
 
 # Отключить 2HA
-read -p "Отключить 2HA (yes)
-Если не требуеться (ok) 
+read -p "Отключить 2HA (1)
+Если не требуеться (2) 
 : " replace_turn
 
 # Запустить процесс для нового пользователя, или выключение для пользователя 2HA 
-read -p "Если запустить процесс для нового пользователя набирите (yes)
-Если запустить процесс отключения 2HA для определенного пользователя наберите (ok)
+read -p "Если запустить процесс отключения 2HA для определенного пользователя наберите (1)
+Если запустить процесс для нового пользователя набирите (2)
 : " replace_process
 
 
@@ -31,21 +31,22 @@ off="publickey keyboard-interactive"
 
 
 if [[ $user != "" && $replace_user != "" ]];  then
-sed -i "s/$user/main_user_name: $replace_user/" $filename 
+sed -i "s/$user/main_user_name: $replace_user/" /home/ubuntu/Engineer-s-SOC/group_vars/srv_ansible.yaml
 fi
 
 if [[ $group != "" && $replace_group != "" ]]; then
-sed -i "s/$group/mygroup: $replace_group/" $filename
+sed -i "s/$group/mygroup: $replace_group/" /home/ubuntu/Engineer-s-SOC/group_vars/srv_ansible.yaml
 fi
 
 if [ "yes" == "$replace_turn" ]; then
 sed -i "s/$off/$on/" $fileadmin
-else echo "Действие невено, повторите. "
+elif [ "1" != "$replace_turn" ]; then
+echo "!!!Действие невено, повторите. "
 fi
 
-if [ "yes" == "$replace_process" ]; then
+if [ "2" == "$replace_process" ]; then
 ansible-playbook goaut.yml -b -kk
-elif [ "ok" ==  "$replace_process" ]; then
+elif [ "1" ==  "$replace_process" ]; then
 ansible-playbook admin.yml -b -kk
 else echo "Действие невено, повторите. "
 fi
