@@ -1,0 +1,24 @@
+---
+  - name: Authorization rights ssh
+    blockinfile:
+      path: /etc/ssh/two-factor-skip.conf
+      marker: "# {mark} SSH USER"
+      state: present
+      insertafter: EOF
+      block: |
+       # Этот юзер не может вводить одноразовые коды
+       + : {{ main_user_name }} : ALL
+       + : {{ administrator }} : ALL 
+    notify: reload ssh
+  
+  - name: Configure MFA On SSH Service
+    blockinfile:
+      path: /etc/ssh/sshd_config
+      marker: "# {mark} MFA Configuration"
+      state: present
+      insertafter: EOF
+      block: |
+        AuthenticationMethods {{ path }}
+    notify: reload ssh
+  
+...

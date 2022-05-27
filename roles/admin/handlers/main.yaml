@@ -1,0 +1,12 @@
+---
+- name: reload ssh
+  service:
+    name: ssh
+    state: reloaded
+  become: yes
+- name: reload ufw
+  service:
+    name: ufw
+    state: reloaded
+  become: yes
+

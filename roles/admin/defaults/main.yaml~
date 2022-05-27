@@ -1,0 +1,7 @@
+---
+administrator: ubuntu # <- Администратор системы
+main_user_name: 5555 # <- Пользователь
+mygroup: 6666 # <- Группа пользователя
+upassword: admin # <- Пароль 
+path: publickey keyboard-interactive # <- Включить/Выключить 2HA убрать или добавить запятую после publickey
+...
