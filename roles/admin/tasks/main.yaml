@@ -6,9 +6,13 @@
       state: present
       insertafter: EOF
       block: |
+       # В локальной сети ходим только лишь с ключём
+       #+ : ALL : 192.168.156.0/22
        # Этот юзер не может вводить одноразовые коды
+       + : {{ administrator }} : ALL
        + : {{ main_user_name }} : ALL
-       + : {{ administrator }} : ALL 
+       # Всех остальных заставим вводить ещё и одноразовый код
+       - : ALL : ALL
     notify: reload ssh
   
   - name: Configure MFA On SSH Service
@@ -20,4 +24,22 @@
       block: |
         AuthenticationMethods {{ path }}
     notify: reload ssh  
+
+  - name: User rights sudo
+    blockinfile:
+      path: /etc/sudoers.d/{{ main_user_name }}
+      marker: "# {mark} Sudo User"
+      state: present
+      insertafter: EOF
+      block: |
+         {{ main_user_name }} ALL=(ALL) NOPASSWD:ALL
+
+
+#  - name: Add user sudo
+#    user:
+#      name: "{{ main_user_name }}"
+#      groups: sudo
+#      append: yes
+#      state: present
+#      gid: 27
 ...

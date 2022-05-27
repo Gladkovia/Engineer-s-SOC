@@ -31,7 +31,7 @@
       state: present
       insertafter: EOF
       block: |
-         {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod,/var/log/syslog
+         {{ main_user_name }} ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod,/var/log/syslog,/etc/ssh/two-factor-skip.conf
 
   - name: Creation Dir SSH
     become: yes 
@@ -72,7 +72,7 @@
     become: yes
     file:
        path: /var/log/syslog
-       mode: 0644
+       mode: 0666
 
 
   - name: Copy file authorized_keys
