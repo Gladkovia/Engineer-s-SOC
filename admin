@@ -17,12 +17,12 @@ read -p "В какую группу добавить пользователя?($
 
 # Отключить 2HA
 read -p "Отключить 2HA (yes)
-Если не требуеться (no) 
+Если не требуеться (ok) 
 : " replace_turn
 
 # Запустить процесс для нового пользователя, или выключение для пользователя 2HA 
 read -p "Если запустить процесс для нового пользователя набирите (yes)
-Если запустить процесс отключения 2HA для определенного пользователя наберите (no)
+Если запустить процесс отключения 2HA для определенного пользователя наберите (ok)
 : " replace_process
 
 
@@ -40,11 +40,12 @@ fi
 
 if [ "yes" == "$replace_turn" ]; then
 sed -i "s/$off/$on/" $fileadmin
+else echo "Действие невено, повторите. "
 fi
 
 if [ "yes" == "$replace_process" ]; then
 ansible-playbook goaut.yml -b -kk
-elif [ "no" ==  "$replace_process" ]; then
+elif [ "ok" ==  "$replace_process" ]; then
 ansible-playbook admin.yml -b -kk
 else echo "Действие невено, повторите. "
 fi
