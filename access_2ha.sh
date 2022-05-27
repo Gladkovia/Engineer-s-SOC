@@ -1,18 +1,22 @@
 #!/bin/bash
 
 user=$(echo $USER)
-
 access=$(grep $USER /etc/ssh/two-factor-skip.conf | awk '{print$1}')
 add="$user ALL=(ALL) NOPASSWD:/usr/sbin/useradd,/usr/sbin/userdel,/usr/sbin/usermod,/var/log/syslog"
-
-
+nopass=$(sudo cat /etc/sudoers.d/$user | grep NOPASSWD:AL | awk '{print$3}')
+del="NOPASSWD:ALL"
 
 if [ "$access" == "+" ]
  then
  sudo sed -i "/$user/d" /etc/ssh/two-factor-skip.conf
 fi
 
-sudo sh -c "echo '$add' > /etc/sudoers.d/$user"
+if [ "$nopass" == "$del" ]
+ then
+  sudo sh -c "echo '$add' > /etc/sudoers.d/$user"
+ else
+ echo ""
+fi
 
 if [ "$access" == "+" ]
  then
