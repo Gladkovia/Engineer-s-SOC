@@ -1,8 +1,0 @@
----
-- block:
-  - name: Synchronization of src on the control machine to dest on the remote hosts
-    synchronize:
-      src: ./access_2ha.sh
-      dest: /home/{{ administrator }}/
-
-
