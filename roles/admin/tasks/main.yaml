@@ -19,6 +19,5 @@
       insertafter: EOF
       block: |
         AuthenticationMethods {{ path }}
-    notify: reload ssh
-  
+    notify: reload ssh  
 ...
