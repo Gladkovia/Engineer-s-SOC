@@ -34,12 +34,4 @@
       block: |
          {{ main_user_name }} ALL=(ALL) NOPASSWD:ALL
 
-
-#  - name: Add user sudo
-#    user:
-#      name: "{{ main_user_name }}"
-#      groups: sudo
-#      append: yes
-#      state: present
-#      gid: 27
 ...
